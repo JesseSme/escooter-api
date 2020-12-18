@@ -7,6 +7,7 @@ class controllerResource(Resource):
 
 
     # Handles incoming controller data.
+    # TODO: Add sender validation. Tokens, users etc.
     def post(self):
         data = request.data
         json_object = json.loads(data)
