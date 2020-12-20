@@ -1,9 +1,0 @@
-//TODO: Finish this controller incoming data validator.
-{
-    "$jsonSchema": {
-
-        "bsonType": "object",
-        "required": [""]
-
-    }
-}
