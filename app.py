@@ -3,7 +3,7 @@ from flask_restful import Api
 from resources.controller import controllerResource
 
 from config import Config
-from extensions import mongo
+from extensions import mongo, jwt
 
 
 def create_app():
