@@ -18,7 +18,8 @@ def create_app():
 
 
 def register_extensions(app):
-    mongo.init_app(app, )
+    mongo.init_app(app)
+    jwt.init_app(app)
 
 
 def register_resources(app):
@@ -26,6 +27,9 @@ def register_resources(app):
     api.add_resource(controllerResource, '/api/db')
 
 
+
 if __name__ == "__main__":
     app = create_app()
-    app.run()
+    app.run(debug=True)
+
+    
