@@ -16,3 +16,7 @@ class controllerResource(Resource):
         print(json_formatted)
 
         return HTTPStatus.CREATED
+
+class controllerRegisterResource(Resource):
+
+    def
