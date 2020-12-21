@@ -10,10 +10,12 @@
             "temp_batt",
             "temp_fet",
             "temp_motor",
-            "amphour_remaining",
-            "amphour_currentusage",
-            "scooter_time",
-            "input_voltage"
+            "average_motorcurrent",
+            "average_inputcurrent",
+            "input_voltage",
+            "rpm",
+            "tachometer",
+            "scooter_time"
         ],
         "properties": {
             "identifier": {
@@ -30,7 +32,7 @@
                             "description": "longitude of gps"
                             },
                         "latitude": {
-                            "bsonType": "string",
+                            "bsonType": "number",
                             "description": "latitude of gps"
                             }
                     }
