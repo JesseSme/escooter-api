@@ -1,7 +1,7 @@
 from flask import Flask
 from flask_restful import Api
 from resources.controller import controllerResource
-from models.controllerValidator import controllerValidator
+from models.controllerValidator import controller
 
 from config import Config
 from extensions import mongo, jwt
@@ -22,7 +22,7 @@ def create_app():
 
 def register_extensions(app):
     mongo.init_app(app)
-    controllerValidator.set_validator()
+    controller.set_validator()
     jwt.init_app(app)
 
 

@@ -3,12 +3,12 @@ import json
 from collections import OrderedDict
 from flask import jsonify
 
-class controllerValidator():
+class controller():
 
     @classmethod
     def set_validator(self):
         validator = {}
-        with open('validators\controllerValidator.json') as validator_file:
+        with open('validators\controller.json') as validator_file:
             validator = json.load(validator_file)
         od = OrderedDict(validator)
         mongo.db.command(od)
