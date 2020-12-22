@@ -1,12 +1,12 @@
 from flask import Flask
 from flask_restful import Api
-from resources.controller import controllerResource
-from models.controllerValidator import controller
+from resources.controller import ControllerResource
+from models.controller import Controller
 
 from config import Config
-from extensions import mongo, jwt
+from extensions import jwt
 
-import json
+import mongoengine
 
 
 def create_app():
@@ -21,14 +21,15 @@ def create_app():
 
 
 def register_extensions(app):
-    mongo.init_app(app)
-    controller.set_validator()
+    db = mongoengine
+    db.connect()
+    print(db.connection)
     jwt.init_app(app)
 
 
 def register_resources(app):
     api = Api(app)
-    api.add_resource(controllerResource, '/api/db')
+    api.add_resource(ControllerResource, '/api/db')
 
 
 
