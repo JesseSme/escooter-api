@@ -1,10 +1,32 @@
-from extensions import mongo
 import json
 from collections import OrderedDict
 from flask import jsonify
+import mongoengine as me
 
-class controller():
 
+class Temperatures(me.EmbeddedDocument):
+    out = me.DecimalField(precision=2)
+    batt = me.DecimalField(precision=2)
+    fet = me.DecimalField(precision=2)
+    motor = me.DecimalField(precision=2)
+
+
+class Controller(me.Document):
+
+    identifier          = me.StringField(required=True)
+    location            = me.GeoPointField(required=True)
+    temps               = me.EmbeddedDocumentField(Temperatures, default=Temperatures)
+    avg_motorcurrent    = me.DecimalField()
+    avg_inputcurrent    = me.DecimalField()
+    input_voltage       = me.DecimalField()
+    rpm                 = me.DecimalField()
+    tachometer          = me.DecimalField()
+    scooter_time        = me.DateTimeField()
+    created_at          = me.DateTimeField()
+    updated_at          = me.DateTimeField()
+
+
+    # Could be needed later on
     @classmethod
     def set_validator(self):
         validator = {}
@@ -12,15 +34,3 @@ class controller():
             validator = json.load(validator_file)
         od = OrderedDict(validator)
         mongo.db.command(od)
-
-    def get_by_identifier(self, identifier):
-        print(identifier)
-        #mongo.db.identifications.create_index({identifier: "text"})
-        gotid = mongo.db.identifications.find_one({"$text": {"$search": "\"{}\"".format(identifier)}})
-        if gotid["identifier"] == identifier:
-            return True
-        return False
-
-
-    def save(self, data):
-        mongo.db.scooter.save(data)
