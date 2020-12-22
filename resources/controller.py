@@ -2,10 +2,10 @@ from flask import request
 from flask_restful import Resource
 from flask import jsonify
 from http import HTTPStatus
+from datetime import datetime
 
-from extensions import me
-
-from models.controller import Controller
+from models.controller import Controller, Temperatures
+from models.identifier import Identifiers
 
 class ControllerResource(Resource):
 
@@ -15,15 +15,26 @@ class ControllerResource(Resource):
         data = request.get_json()
 
         controllerData = Controller(
-            identifier=data["identifier"]
+            location=data["location"],
+            temps=Temperatures(
+                out=data["temp_out"],
+                batt=data["temp_batt"],
+                fet=data["temp_fet"],
+                motor=data["temp_motor"]
+                ),
+            avg_motorcurrent=data["average_motorcurrent"],
+            avg_inputcurrent=data["average_inputcurrent"],
+            input_voltage=data["input_voltage"],
+            rpm=data["rpm"],
+            tachometer=data["tachometer"],
+            scooter_time=datetime.datetime.fromtimestamp(data["epoch"]),
+            created_at=datetime.now()
         )
 
-        identifier = data['identifier']
-        if c.get_by_identifier(identifier) != True:
+        if Identifiers.objects(identifier=data["identifier"]):
             return HTTPStatus.UNAUTHORIZED
 
-        me.save(data)
-        data.pop("_id")
+        controllerData.save()
 
         return data, HTTPStatus.OK
 
