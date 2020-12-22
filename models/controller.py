@@ -1,8 +1,6 @@
 import json
 from collections import OrderedDict
-from flask import jsonify
-import mongoengine as me
-
+from extensions import me
 
 class Temperatures(me.EmbeddedDocument):
     out = me.DecimalField(precision=2)
@@ -33,4 +31,4 @@ class Controller(me.Document):
         with open('validators\controller.json') as validator_file:
             validator = json.load(validator_file)
         od = OrderedDict(validator)
-        mongo.db.command(od)
+        me.command(od)

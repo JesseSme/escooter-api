@@ -4,9 +4,8 @@ from resources.controller import ControllerResource
 from models.controller import Controller
 
 from config import Config
-from extensions import jwt
+from extensions import me, jwt
 
-import mongoengine
 
 
 def create_app():
@@ -21,9 +20,7 @@ def create_app():
 
 
 def register_extensions(app):
-    db = mongoengine
-    db.connect()
-    print(db.connection)
+    me.init_app(app)
     jwt.init_app(app)
 
 
