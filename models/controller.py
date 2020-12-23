@@ -1,37 +1,39 @@
 # import json
 # from collections import OrderedDict
-from extensions import me
+# from extensions import me
 from datetime import datetime
+from mongoengine import *
 from mongoengine import signals
 
 
-class Temperatures(me.EmbeddedDocument):
-    out                 = me.DecimalField(precision=2)
-    batt                = me.DecimalField(precision=2)
-    fet                 = me.DecimalField(precision=2)
-    motor               = me.DecimalField(precision=2)
+class Temperatures(EmbeddedDocument):
+    out                 = DecimalField(precision=2)
+    batt                = DecimalField(precision=2)
+    fet                 = DecimalField(precision=2)
+    motor               = DecimalField(precision=2)
 
 
 # TODO: Test Controller -model
-class Controller(me.Document):
+class Controller(Document):
 
-    location            = me.GeoPointField(required=True)
-    temps               = me.EmbeddedDocumentField(Temperatures, default=Temperatures)
-    avg_motorcurrent    = me.DecimalField()
-    avg_inputcurrent    = me.DecimalField()
-    input_voltage       = me.DecimalField()
-    rpm                 = me.DecimalField()
-    tachometer          = me.DecimalField()
-    scooter_time        = me.DateTimeField()
-    created_at          = me.DateTimeField()
-    updated_at          = me.DateTimeField()
+    location            = GeoPointField(required=True)
+    temps               = EmbeddedDocumentField(Temperatures, default=Temperatures)
+    avg_motorcurrent    = DecimalField()
+    avg_inputcurrent    = DecimalField()
+    input_voltage       = DecimalField()
+    rpm                 = DecimalField()
+    tachometer          = DecimalField()
+    scooter_time        = DateTimeField()
+    created_at          = DateTimeField()
+    updated_at          = DateTimeField()
 
 
     # https://stackoverflow.com/a/6602255/11426304
-    def save(self, *args, **kwargs):
-        self.updated_at = datetime.now()
-        super(Controller, self).save(*args, **kwargs)
+    @classmethod
+    def pre_save(cls, sender, document):
+        document.updated_at = datetime.now()
 
+signals.pre_save.connect(Controller.pre_save, sender=Controller)
 
     # Could be needed later on
 #    @classmethod

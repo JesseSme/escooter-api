@@ -3,19 +3,20 @@ from flask_restful import Resource
 from flask import jsonify
 from http import HTTPStatus
 from datetime import datetime
-
+# from extensions import me
 from models.controller import Controller, Temperatures
 from models.identifier import Identifiers
 
 class ControllerResource(Resource):
 
     # Handles incoming controller data.
-    # TODO: Add sender validation. Tokens, users etc.
+    # TODO: Add token verification. No high prio.
     def post(self):
-        data = request.get_json()
 
+        data = request.get_json()
+        location = data["location"]
         controllerData = Controller(
-            location=data["location"],
+            location= [location["longitude"],location["latitude"]],
             temps=Temperatures(
                 out=data["temp_out"],
                 batt=data["temp_batt"],
@@ -27,14 +28,13 @@ class ControllerResource(Resource):
             input_voltage=data["input_voltage"],
             rpm=data["rpm"],
             tachometer=data["tachometer"],
-            scooter_time=datetime.datetime.fromtimestamp(data["epoch"]),
+            scooter_time=datetime.fromtimestamp(data["epoch"]),
             created_at=datetime.now()
         )
-
-        if Identifiers.objects(identifier=data["identifier"]):
-            return HTTPStatus.UNAUTHORIZED
-
-        controllerData.save()
-
-        return data, HTTPStatus.OK
-
+        idd = data["identifier"]
+        Identifiers.objects.get_or_404(identifier=idd)
+        try:
+            controllerData.save()
+        except:
+            return {"error": "Something went wrong"}, HTTPStatus.INTERNAL_SERVER_ERROR
+        return {"message": "Data saved"}, HTTPStatus.OK

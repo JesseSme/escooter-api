@@ -7,7 +7,6 @@ from config import Config
 from extensions import me, jwt
 
 
-
 def create_app():
     app = Flask(__name__)
     app.config.from_object(Config)
@@ -26,7 +25,7 @@ def register_extensions(app):
 
 def register_resources(app):
     api = Api(app)
-    api.add_resource(ControllerResource, '/api/db')
+    api.add_resource(ControllerResource, '/ipa/db')
 
 
 

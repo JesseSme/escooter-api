@@ -5,4 +5,4 @@ class Identifiers(me.Document):
 
     @classmethod
     def get_by_identifier(cls, identifier):
-        return me.objects(identifier=identifier)
+        return cls._get_collection
