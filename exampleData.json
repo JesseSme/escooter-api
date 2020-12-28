@@ -1,0 +1,19 @@
+{
+
+    "identifier": "add your own",
+    "location": {
+        "longitude": 12.3123,
+        "latitude": 32.1243
+    },
+    "temp_out": -10.4,
+    "temp_batt": 22.6,
+    "temp_fet": 45.6,
+    "temp_motor": 33.3,
+    "average_motorcurrent": 48.3,
+    "average_inputcurrent": 22.2,
+    "input_voltage": 50.2,
+    "rpm": 56,
+    "tachometer": 44,
+    "scooter_time": 2348762
+
+}

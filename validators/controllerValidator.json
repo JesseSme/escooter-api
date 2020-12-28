@@ -1,0 +1,83 @@
+{
+"collMod": "scooter",
+"validator": {
+    "$jsonSchema": {
+        "bsonType": "object",
+        "required": [
+            "identifier",
+            "location",
+            "temp_out",
+            "temp_batt",
+            "temp_fet",
+            "temp_motor",
+            "average_motorcurrent",
+            "average_inputcurrent",
+            "input_voltage",
+            "rpm",
+            "tachometer",
+            "scooter_time"
+        ],
+        "properties": {
+            "identifier": {
+                "bsonType": "string",
+                "description": "Identifier for the arduino on the scooter"
+                },
+            "location": {
+                "bsonType": "object",
+                "required": ["longitude", "latitude"],
+                "description": "GPS points",
+                "properties": {
+                        "longitude": {
+                            "bsonType": "number",
+                            "description": "longitude of gps"
+                            },
+                        "latitude": {
+                            "bsonType": "number",
+                            "description": "latitude of gps"
+                            }
+                    }
+                },
+            "temp_out": {
+                "bsonType": "number",
+                "description": "temperature of the sensor attached to the chassis"
+                },
+            "temp_batt": {
+                "bsonType": "number",
+                "description": "Battery temperature sensor"
+                },
+            "temp_fet": {
+                "bsonType": "number",
+                "description": "Temperature sensor next to fets on VESC"
+                },
+            "temp_motor": {
+                "bsonType": "number",
+                "description": "temperature of motor. Not sure where this is measured."
+                },
+            "average_motorcurrent": {
+                "bsonType": "number",
+                "description": "average current going to the motor"
+                },
+            "average_inputcurrent": {
+                "bsonType": "number",
+                "description": "average current coming into VESC"
+                },
+            "input_voltage": {
+                "bsonType": "number",
+                "description": "voltage coming into VESC"
+                },
+            "rpm": {
+                "bsonType": "number",
+                "description": "motor rpm"
+                },
+            "tachometer": {
+                "bsonType": "number",
+                "description": "no clue where the motor is pulling this from"
+                },
+            "scooter_time": {
+                "bsonType": "number",
+                "description": "epoch of the time scooter gets from nb-iot network"
+                }
+            }
+        }
+    }
+}

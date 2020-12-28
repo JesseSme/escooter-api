@@ -1,6 +1,10 @@
 from flask import Flask
 from flask_restful import Api
-from resources import database
+from resources.controller import ControllerResource
+from models.controller import Controller
+
+from config import Config
+from extensions import me, jwt
 
 
 def create_app():
@@ -15,12 +19,16 @@ def create_app():
 
 
 def register_extensions(app):
+    me.init_app(app)
+    jwt.init_app(app)
 
 
 def register_resources(app):
     api = Api(app)
-    api.add_resource(databaseResource, "/api/db")
+    api.add_resource(ControllerResource, '/ipa/db')
+
 
 
 if __name__ == "__main__":
-    app.run()
+    app = create_app()
+    app.run(debug=True)
