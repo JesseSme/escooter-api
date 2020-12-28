@@ -14,6 +14,7 @@ class ControllerResource(Resource):
     def post(self):
 
         data = request.get_json()
+        print(data)
         location = data["location"]
         controllerData = Controller(
             location= [location["longitude"],location["latitude"]],
