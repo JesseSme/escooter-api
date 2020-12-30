@@ -1,7 +1,9 @@
-from flask import Flask
+from flask import Flask, render_template
 from flask_restful import Api
+
 from resource.controller import ControllerResource
 from resource.test import TestResource
+
 from models.controller import Controller
 
 from config import Config
@@ -9,7 +11,7 @@ from extensions import me, jwt
 
 
 def create_app():
-    app = Flask(__name__)
+    app = Flask(__name__, template_folder="templates")
     app.config.from_object(Config)
     app.app_context().push()
 
@@ -31,5 +33,6 @@ def register_resources(app):
 
 app = create_app()
 
+
 if __name__ == "__main__":
-    app.run()
+    app.run(debug=True)
