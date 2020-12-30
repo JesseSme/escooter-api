@@ -1,6 +1,7 @@
 from flask import Flask
 from flask_restful import Api
 from resources.controller import ControllerResource
+from resources.test import TestResource
 from models.controller import Controller
 
 from config import Config
@@ -25,10 +26,10 @@ def register_extensions(app):
 
 def register_resources(app):
     api = Api(app)
-    api.add_resource(ControllerResource, '/ipa/db')
+    api.add_resource(ControllerResource, '/ipa/controller')
+    api.add_resource(TestResource, "/")
 
-
+app = create_app()
 
 if __name__ == "__main__":
-    app = create_app()
-    app.run(debug=True)
+    app.run()

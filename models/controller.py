@@ -2,7 +2,7 @@
 # from collections import OrderedDict
 # from extensions import me
 from datetime import datetime
-from mongoengine import *
+from mongoengine import Document, EmbeddedDocument, DecimalField, EmbeddedDocumentField, DateTimeField, GeoPointField
 from mongoengine import signals
 
 
