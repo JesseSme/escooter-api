@@ -1,4 +1,4 @@
-from flask import request
+from flask import request, make_response
 from flask_restful import Resource
 from flask import jsonify
 from http import HTTPStatus
@@ -12,6 +12,8 @@ class ControllerResource(Resource):
     # Handles incoming controller data.
     # TODO: Add token verification. No high prio.
     def post(self):
+        if not request.json:
+            return {"error": "unsupported media."}, HTTPStatus.UNSUPPORTED_MEDIA_TYPE
 
         data = request.get_json()
         print(data)
