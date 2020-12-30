@@ -1,7 +1,7 @@
 from flask import Flask
 from flask_restful import Api
-from resources.controller import ControllerResource
-from resources.test import TestResource
+from resource.controller import ControllerResource
+from resource.test import TestResource
 from models.controller import Controller
 
 from config import Config
