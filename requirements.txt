@@ -1,6 +1,5 @@
 aniso8601==8.1.0
 astroid==2.4.2
-awsebcli==3.19.2
 blinker==1.4
 botocore==1.19.46
 cement==2.8.2
