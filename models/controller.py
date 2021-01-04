@@ -34,12 +34,3 @@ class Controller(Document):
         document.updated_at = datetime.now()
 
 signals.pre_save.connect(Controller.pre_save, sender=Controller)
-
-    # Could be needed later on
-#    @classmethod
-#    def set_validator(self):
-#       validator = {}
-#       with open('validators\controller.json') as validator_file:
-#       validator = json.load(validator_file)
-#       od = OrderedDict(validator)
-#       me.command(od)
