@@ -41,3 +41,6 @@ class ControllerResource(Resource):
         except:
             return {"error": "Something went wrong"}, HTTPStatus.INTERNAL_SERVER_ERROR
         return {"message": "Data saved"}, HTTPStatus.OK
+
+    
+    
