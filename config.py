@@ -1,10 +1,10 @@
-from secret import MONGODB_PASS, JWT_KEY, JWT_ERROR_KEY
+from secret import *
 
 class Config:
 
     MONGODB_SETTINGS = {
         "db": "tracking",
-        "host": "mongodb+srv://IAmRoot:{}@iot.fnq30.mongodb.net/tracking?retryWrites=true&w=majority".format(MONGODB_PASS),
+        "host": "mongodb+srv://IAmRoot:{}@iot.fnq30.mongodb.net/tracking?retryWrites=true&w=majority".format(MONGODB_PASS_SECRET),
         "connectTimeoutMS": 30000,
         "socketTimeoutMS": None,
         "socketKeepAlive": True,
@@ -12,5 +12,6 @@ class Config:
         "maxPoolsize": 1
     }
     # MONGO_URI =
-    SECRET_KEY = JWT_KEY
-    JWT_ERROR_MESSAGE_KEY = JWT_ERROR_KEY
+    SECRET_KEY = SECRET_KEY_SECRET
+    JWT_ERROR_MESSAGE_KEY = JWT_ERROR_KEY_SECRET
+    GOOGLEMAPS_KEY = GOOGLEMAPS_KEY_SECRET
