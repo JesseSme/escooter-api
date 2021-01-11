@@ -7,7 +7,7 @@ from resource.test import TestResource
 from models.controller import Controller
 
 from config import Config
-from extensions import *
+from extensions import jwt, maps, me
 
 
 def create_app():
