@@ -4,12 +4,40 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Index</title>
+  <script src="//code.jquery.com/jquery-1.12.4.min.js"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/socket.io/3.0.5/socket.io.js"></script>
+  <script type="text/javascript" charset="utf-8">
+    $(document).ready(function() {
+
+      namespace = "/";
+      var socket = io.connect(null, {port: 5000, rememberTransport: false});
+
+      socket.on("connect", function() {
+        socket.emit("hello", {data: 'connected to the SocketServer...'});
+      });
+
+      socket.on("response", function(msg) {
+        $("#log").append("<br>" + $("<div/>").text("logs #" + msg.count + ":" + msg.message).html());
+      });
+
+
+      $('form#emit').submit(function(event) {
+                socket.emit('scooter_info', {data: $('#emit_data').val()});
+                return false;
+      });
+    });
+  </script>
+
+  <title>Websocket test</title>
 </head>
 
 <body>
   <h1 style="color: blue">Index</h1>
-  <p>This is an HTML file served up by Flask</p>
+  <form id="emit" method="POST" action="#">
+    <input type="text" name="emit_data" id="emit_data" placeholder="Message">
+    <input type="submit" value="Send message">
+  </form>
+  <div id="log"></div>
 </body>
 
 </html>
