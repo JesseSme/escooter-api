@@ -6,28 +6,16 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <script src="//code.jquery.com/jquery-1.12.4.min.js"></script>
   <script src="//cdnjs.cloudflare.com/ajax/libs/socket.io/3.0.5/socket.io.js"></script>
-  <script type="text/javascript" charset="utf-8">
-    $(document).ready(function() {
-
-      namespace = "/";
-      var socket = io.connect(null, {port: 5000, rememberTransport: false});
-
-      socket.on("connect", function() {
-        socket.emit("hello", {data: 'connected to the SocketServer...'});
-      });
-
-      socket.on("response", function(msg) {
-        $("#log").append("<br>" + $("<div/>").text("logs #" + msg.count + ":" + msg.message).html());
-      });
-
-
-      $('form#emit').submit(function(event) {
-                socket.emit('scooter_info', {data: $('#emit_data').val()});
-                return false;
-      });
-    });
-  </script>
-
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+  integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
+  crossorigin=""/>
+  <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
+  integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
+  crossorigin=""></script>
+  
+  <style>
+    #map { height: 240px; width: 360px; }
+  </style>
   <title>Websocket test</title>
 </head>
 
@@ -37,7 +25,70 @@
     <input type="text" name="emit_data" id="emit_data" placeholder="Message">
     <input type="submit" value="Send message">
   </form>
+  <form id="geoloc" method="POST" action="#">
+    <input type="submit" value="Update location">
+  </form>
+  <div id="map"></div>
   <div id="log"></div>
+  <script type="text/javascript" charset="utf-8">
+    var mymap = L.map('map').setView([51.505, -0.09], 13);
+    var latlng = new L.LatLng(0,0)
+    L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
+    attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+    maxZoom: 18,
+    id: 'mapbox/streets-v11',
+    tileSize: 512,
+    zoomOffset: -1,
+    accessToken: 'pk.eyJ1IjoiamVzc2VzbWUiLCJhIjoiY2tqd3BvNHNuMGtqYzJ2bDdyd3hxbGc2YSJ9.QrC4h8kQU6GuhQG14sk6oA'
+  }).addTo(mymap);
+  var marker = L.marker([51.5, -0.09]).addTo(mymap);
+  </script>
+  <script type="text/javascript" charset="utf-8">
+  $(document).ready(function() {
+
+    namespace = "/";
+    var socket = io.connect(null, {port: 5000, rememberTransport: false});
+
+    socket.on("connect", function() {
+      socket.emit("hello", {data: 'connected to the SocketServer...'});
+    });
+
+    socket.on("response", function(msg) {
+      $("#log").append("<br>" + $("<div/>").text("logs #" + msg.count + ":" + msg.message).html());
+    });
+
+    socket.on("georesp", function(location) {
+      
+      if (mymap.hasLayer(marker)) {
+        console.log(mymap.hasLayer(marker))
+        mymap.removeLayer(marker)
+        console.log(location.latitude)
+        console.log(location.longitude)
+        marker = L.marker([parseInt(location.latitude), parseInt(location.longitude)]).addTo(mymap);
+        mymap.setView(latlng.LatLng, mymap.getZoom(), {animation: true}).fitBounds(L.LatLng().fitBounds);
+      }
+      else {
+        console.log("Here")
+        console.log(mymap.hasLayer(marker))
+        latlng.LatLng([location.latitude, location.longitude])
+        marker = L.marker(latlng.latlng).addTo(mymap);
+
+        mymap.setView(latlng.LatLng, mymap.getZoom(), {animation: true}).fitBounds(L.LatLng().fitBounds);
+      }
+    })
+
+
+    $('form#emit').submit(function(event) {
+              socket.emit('scooter_info', {data: $('#emit_data').val()});
+              return false;
+    });
+    $('form#geoloc').submit(function(event) {
+      socket.emit('geoloc', {"data": "Updating marker"})
+      return false;
+    });
+  });
+</script>
+
 </body>
 
 </html>

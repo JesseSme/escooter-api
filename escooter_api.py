@@ -27,7 +27,6 @@ def create_app():
 def register_extensions(app):
     me.init_app(app)
     jwt.init_app(app)
-
     maps.init_app(app)
     socketio.init_app(app)
 

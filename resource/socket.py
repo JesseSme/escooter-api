@@ -8,6 +8,9 @@ from models.controller import Controller, Temperatures
 from extensions import socketio, me
 
 class WebSocketResource(Resource):
+
+    location = [60.4353, 22.2287]
+
     def __init__(self):
         pass
 
@@ -26,3 +29,10 @@ class WebSocketResource(Resource):
         scooter_json = json.loads(scooter_data)
         scooter_json.pop("_id")
         emit("response", {"message": json.dumps(scooter_json), "count": session["receive_count"]})
+
+    @socketio.on("geoloc", namespace="/")
+    def geoloc_event(message):
+        print("Im here")
+        emit("georesp", {"latitude": WebSocketResource.location[0], "longitude": WebSocketResource.location[1]})
+        WebSocketResource.location[0] = WebSocketResource.location[0] + 1
+        print(WebSocketResource.location[0])
