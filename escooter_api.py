@@ -9,7 +9,7 @@ from resource.socket import WebSocketResource
 
 # Settings and extensions
 from config import Config
-from extensions import jwt, maps, me, socketio
+from extensions import jwt, maps, me, socketio, apsheduler
 
 
 
@@ -21,6 +21,8 @@ def create_app():
     register_extensions(app)
     register_resources(app)
 
+    
+
     return app
 
 
@@ -29,6 +31,7 @@ def register_extensions(app):
     jwt.init_app(app)
     maps.init_app(app)
     socketio.init_app(app)
+    apsheduler.init_app(app)
 
 
 

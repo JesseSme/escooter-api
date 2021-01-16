@@ -5,33 +5,38 @@ import json
 
 from models.controller import Controller, Temperatures
 
-from extensions import socketio, me
+from extensions import socketio, me, apsheduler
 
 class WebSocketResource(Resource):
 
-    location = [60.4353, 22.2287]
+    location = [60.4353, 22.2287]   # Initial coordinates, when the program starts.
+
 
     def __init__(self):
-        pass
+        apsheduler.start()
+        self.scooter_data = Controller.objects.order_by("-updated_at").first()
+    
+
 
     @socketio.on("hello", namespace="/")
-    def hello_event(message):
+    def hello_event(self, message):
         session["receive_count"] = session.get("receive_count", 0) + 1
         emit("response", {"message": message["data"] , "count": session["receive_count"]})
 
 
     @socketio.on("scooter_info", namespace="/")
-    def scooter_info_event(message):
+    def scooter_info_event(self):
 
         session["receive_count"] = session.get("receive_count", 0) + 1
-        scooter_data = Controller.objects.order_by("-updated_at").first()
+        self.scooter_data = Controller.objects.order_by("-updated_at").first()
         scooter_data = scooter_data.to_json()
         scooter_json = json.loads(scooter_data)
         scooter_json.pop("_id")
         emit("response", {"message": json.dumps(scooter_json), "count": session["receive_count"]})
 
+
     @socketio.on("geoloc", namespace="/")
-    def geoloc_event(message):
+    def geoloc_event(self):
         print("Im here")
         emit("georesp", {"latitude": WebSocketResource.location[0], "longitude": WebSocketResource.location[1]})
         WebSocketResource.location[0] = WebSocketResource.location[0] + 1

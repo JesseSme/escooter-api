@@ -33,4 +33,9 @@ class Controller(Document):
     def pre_save(cls, sender, document):
         document.updated_at = datetime.now()
 
+
+    @classmethod
+    def get_latest_data(cls):
+        return cls.objects.order_by("-updated_at").first()
+
 signals.pre_save.connect(Controller.pre_save, sender=Controller)
