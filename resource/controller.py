@@ -26,6 +26,7 @@ class ControllerResource(Resource):
                 fet=data["temp_fet"],
                 motor=data["temp_motor"]
                 ),
+            senderip=data["senderip"],
             avg_motorcurrent=data["average_motorcurrent"],
             avg_inputcurrent=data["average_inputcurrent"],
             input_voltage=data["input_voltage"],
@@ -42,5 +43,3 @@ class ControllerResource(Resource):
             return {"error": "Something went wrong"}, HTTPStatus.INTERNAL_SERVER_ERROR
         return {"message": "Data saved"}, HTTPStatus.OK
 
-    
-    

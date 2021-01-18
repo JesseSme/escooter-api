@@ -2,7 +2,7 @@
 # from collections import OrderedDict
 # from extensions import me
 from datetime import datetime
-from mongoengine import Document, EmbeddedDocument, DecimalField, EmbeddedDocumentField, DateTimeField, GeoPointField
+from mongoengine import Document, EmbeddedDocument, DecimalField, EmbeddedDocumentField, DateTimeField, GeoPointField, StringField
 from mongoengine import signals
 
 
@@ -18,6 +18,7 @@ class Controller(Document):
 
     location            = GeoPointField(required=True)
     temps               = EmbeddedDocumentField(Temperatures, default=Temperatures)
+    senderip            = StringField()
     avg_motorcurrent    = DecimalField()
     avg_inputcurrent    = DecimalField()
     input_voltage       = DecimalField()

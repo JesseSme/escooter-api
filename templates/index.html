@@ -12,10 +12,37 @@
   <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
   integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
   crossorigin=""></script>
-  
   <style>
     #map { height: 240px; width: 360px; }
   </style>
+  <script type="text/javascript" charset="utf-8">
+    $(document).ready(function() {
+
+      namespace = "/";
+      var socket = io.connect(null, {port: 5000, rememberTransport: false});
+
+      socket.on("connect", function() {
+        socket.emit("hello", {data: 'connected to the SocketServer...'});
+      });
+
+      socket.on("response", function(msg) {
+        $("#log").append("<br>" + $("<div/>").text("logs #" + msg.count + ":" + msg.message).html());
+      });
+
+
+
+      $('form#emit').submit(function(event) {
+                socket.emit('scooter_info', {data: $('#emit_data').val()});
+                return false;
+      });
+
+      $('form#power').submit(function(event) {
+        socket.emit('power_signal', {pass: $('#password_power').val(), state: $('#power_button').val()});
+        return false;
+      });
+    });
+  </script>
+
   <title>Websocket test</title>
 </head>
 
@@ -29,6 +56,10 @@
     <input type="submit" value="Update location">
   </form>
   <div id="map"></div>
+  <form id="power" method="POST" action="#">
+    <input type="password" name="password" id="password_power" placeholder="Password here">
+    <input id="power_button" type="submit" value="Turn on">
+  </form>
   <div id="log"></div>
   <script type="text/javascript" charset="utf-8">
     var mymap = L.map('map').setView([51.505, -0.09], 13);
