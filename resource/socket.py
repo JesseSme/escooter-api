@@ -10,11 +10,11 @@ from extensions import socketio, me, apsheduler
 class WebSocketResource(Resource):
 
     location = [60.4353, 22.2287]   # Initial coordinates, when the program starts.
+    scooter_data = 0
 
 
     def __init__(self):
-        apsheduler.start()
-        self.scooter_data = Controller.objects.order_by("-updated_at").first()
+        pass
 
 
     @staticmethod
@@ -31,7 +31,7 @@ class WebSocketResource(Resource):
     @socketio.on("scooter_info", namespace="/")
     def scooter_info_event(message):
         WebSocketResource.inc_receive()
-        scooter_data = Controller.objects.order_by("-updated_at").first()
+        scooter_data = Controller.get_latest_data()
         scooter_data = scooter_data.to_json()
         scooter_json = json.loads(scooter_data)
         scooter_json.pop("_id")
