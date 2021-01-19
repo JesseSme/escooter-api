@@ -5,7 +5,7 @@ from http import HTTPStatus
 from datetime import datetime
 # from extensions import me
 from models.controller import Controller, Temperatures
-from models.identifier import Identifiers
+from models.identifier import Identifier
 
 class ControllerResource(Resource):
 
