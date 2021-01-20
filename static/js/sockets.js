@@ -17,20 +17,18 @@ $(document).ready(function() {
           mymap.removeLayer(marker)
           console.log(location.latitude)
           console.log(location.longitude)
-          marker = L.marker([parseInt(location.latitude), parseInt(location.longitude)]).addTo(mymap);
-          mymap.setView(latlng.LatLng, mymap.getZoom(), {animation: true}).fitBounds(L.LatLng().fitBounds);
+          marker = L.marker([parseInt(location.latitude), parseInt(location.longitude)]);
+          marker.addTo(mymap)
+          centerMapOnMarker(mymap, marker);
         }
         else {
           console.log("Here")
           console.log(mymap.hasLayer(marker))
-          latlng.LatLng([location.latitude, location.longitude])
-          marker = L.marker(latlng.latlng).addTo(mymap);
-  
-          mymap.setView(latlng.LatLng, mymap.getZoom(), {animation: true}).fitBounds(L.LatLng().fitBounds);
+          marker = L.marker([parseInt(location.latitude), parseInt(location.longitude)]);
+          marker.addTo(mymap)
+          centerMapOnMarker(mymap, marker);
         }
     })
-
-
 
     $('form#emit').submit(function(event) {
               socket.emit('scooter_info', {data: $('#emit_data').val()});

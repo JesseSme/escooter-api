@@ -4,6 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.gif') }}">
   <script src="//code.jquery.com/jquery-1.12.4.min.js"></script>
   <script src="//cdnjs.cloudflare.com/ajax/libs/socket.io/3.0.5/socket.io.js"></script>
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
@@ -12,6 +13,7 @@
   <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
   integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
   crossorigin=""></script>
+  <link rel="stylesheet" href="static\styles.css"/>
   <style>
     #map { height: 240px; width: 360px; }
   </style>
@@ -21,12 +23,14 @@
 </head>
 
 <body>
-  <h1 style="color: blue">Index</h1>
+  <div>  <!--Main component-->
+    <div>
   <form id="emit" method="POST" action="#">
     <input type="text" name="emit_data" id="emit_data" placeholder="Message">
     <input type="submit" value="Send message">
   </form>
   <button id=geoloc action="#">Force Update</button>
+  </div>
   <div id="map"></div>
   <button id="test" action="#">Test</button>
   <form id="power" method="POST" action="#">
@@ -34,7 +38,7 @@
     <input id="power_button" type="submit" value="Turn on">
   </form>
   <div id="log"></div>
-
+  </div>
   <script src="static\js\leafmap.js" type="text/javascript" charset="utf-8"></script>
   <script src="static\js\sockets.js" type="text/javascript" charset="utf-8"></script>
 

@@ -1,5 +1,5 @@
 # Flask modules
-from flask import Flask, render_template
+from flask import Flask, render_template, url_for
 from flask_restful import Api
 
 # Resources
@@ -38,8 +38,8 @@ def register_resources(app):
     api.add_resource(ControllerResource, '/ipa/controller')
     api.add_resource(HomeResource, "/")
 
-app = create_app()
 
+app = create_app()
 
 if __name__ == "__main__":
     app.run(debug=True)
