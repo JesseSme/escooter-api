@@ -2,7 +2,7 @@
 # from collections import OrderedDict
 # from extensions import me
 from datetime import datetime
-from mongoengine import Document, EmbeddedDocument, DecimalField, EmbeddedDocumentField, DateTimeField, GeoPointField
+from mongoengine import Document, EmbeddedDocument, DecimalField, EmbeddedDocumentField, DateTimeField, GeoPointField, StringField
 from mongoengine import signals
 
 
@@ -18,6 +18,7 @@ class Controller(Document):
 
     location            = GeoPointField(required=True)
     temps               = EmbeddedDocumentField(Temperatures, default=Temperatures)
+    senderip            = StringField()
     avg_motorcurrent    = DecimalField()
     avg_inputcurrent    = DecimalField()
     input_voltage       = DecimalField()
@@ -33,13 +34,9 @@ class Controller(Document):
     def pre_save(cls, sender, document):
         document.updated_at = datetime.now()
 
-signals.pre_save.connect(Controller.pre_save, sender=Controller)
 
-    # Could be needed later on
-#    @classmethod
-#    def set_validator(self):
-#       validator = {}
-#       with open('validators\controller.json') as validator_file:
-#       validator = json.load(validator_file)
-#       od = OrderedDict(validator)
-#       me.command(od)
+    @classmethod
+    def get_latest_data(cls):
+        return cls.objects.order_by("-updated_at").first()
+
+signals.pre_save.connect(Controller.pre_save, sender=Controller)

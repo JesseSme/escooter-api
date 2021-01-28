@@ -1,11 +1,16 @@
-from flask import Flask, render_template
+# Flask modules
+from flask import Flask, render_template, url_for
 from flask_restful import Api
 
+# Resources
 from resource.controller import ControllerResource
-from resource.test import TestResource, TestTwoResource
+from resource.home import HomeResource
+from resource.socket import WebSocketResource
 
+# Settings and extensions
 from config import Config
-from extensions import me, jwt
+from extensions import jwt, maps, me, socketio, apsheduler
+
 
 
 def create_app():
@@ -22,16 +27,19 @@ def create_app():
 def register_extensions(app):
     me.init_app(app)
     jwt.init_app(app)
+    maps.init_app(app)
+    socketio.init_app(app)
+    apsheduler.init_app(app)
+
 
 
 def register_resources(app):
     api = Api(app)
     api.add_resource(ControllerResource, '/ipa/controller')
-    api.add_resource(TestResource, "/")
-    api.add_resource(TestTwoResource, "/test2")
+    api.add_resource(HomeResource, "/")
+
 
 app = create_app()
 
-
 if __name__ == "__main__":
-    app.run()
+    app.run(debug=True)
