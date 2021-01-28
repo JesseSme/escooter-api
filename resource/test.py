@@ -7,8 +7,10 @@ from http import HTTPStatus
 
 class TestResource(Resource):
 
-
     def get(self):
-        headers = {"Content-Type": "text/html"}
 
-        return make_response(render_template("index.html"), 200, headers)
+        return make_response("<div>Im in test</div>", 200)
+
+class TestTwoResource(Resource):
+    def get(self):
+        return make_response("<div>Im in test 2</div>", 200)

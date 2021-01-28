@@ -2,9 +2,7 @@ from flask import Flask, render_template
 from flask_restful import Api
 
 from resource.controller import ControllerResource
-from resource.test import TestResource
-
-from models.controller import Controller
+from resource.test import TestResource, TestTwoResource
 
 from config import Config
 from extensions import me, jwt
@@ -30,6 +28,7 @@ def register_resources(app):
     api = Api(app)
     api.add_resource(ControllerResource, '/ipa/controller')
     api.add_resource(TestResource, "/")
+    api.add_resource(TestTwoResource, "/test2")
 
 app = create_app()
 
