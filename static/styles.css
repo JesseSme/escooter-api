@@ -10,13 +10,13 @@
     background-color: var(--main-bg-color);
 }
 
-
-
-
-
-
-
-
+#log {
+    max-height: 150px;
+    width: 200px;
+    margin-bottom: 15px;
+    overflow: auto;
+    list-style: none;
+}
 
 
 /* Color Theme Swatches in Hex */
