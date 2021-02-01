@@ -2,6 +2,7 @@ from flask import session, jsonify
 from flask_restful import Resource
 from flask_socketio import send, emit
 import json
+import requests
 
 from models.controller import Controller, Temperatures
 

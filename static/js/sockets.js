@@ -8,7 +8,7 @@ $(document).ready(function() {
     });
 
     socket.on("response", function(msg) {
-      $("#log").append("<br>" + $("<div/>").text("logs #" + msg.count + ":" + msg.message).html());
+      $("#log").prepend("<br>" + $("<div/>").text("logs #" + msg.count + ":" + msg.message).html());
     });
 
     socket.on("georesp", function(location) {
