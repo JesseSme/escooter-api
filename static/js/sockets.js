@@ -2,28 +2,78 @@ $(document).ready(function() {
 
     namespace = "/";
     var socket = io.connect(null, {port: 5000, rememberTransport: false});
+	var scooter_data = ""
+
 
     socket.on("connect", function() {
       socket.emit("hello", {data: 'connected to the SocketServer...'});
-    });
+	});
+
+	socket.on("dataresponse", function(msg) {
+		var data = JSON.parse(msg.message)
+		$("#data_location").text("Location: " + data["location"][0] + ", " + data["location"][1]).html()
+		$("#data_table").html("");
+		for ([key, value] of Object.entries(data)) {
+			var counter = 0
+			if (Array.isArray(value)) {
+				var length = value.length
+				$("#data_table").append(
+					`<tr id="data_${key}"}><th ${length <= 1 ? "" : `rowspan=${length}`}>${key}</th></tr>`
+				)
+				value.forEach(element => {
+					if (counter == 0) {
+						$(`#data_${key}`).append(
+							`<td>${element}</td>`
+						)
+						counter = 1
+					} else {
+						$("#data_table").append(`<tr><td>${element}</td></tr>`)
+					}
+				})
+			} else if (typeof(value) == "object") {
+				if (value["$date"]){
+					var d = new Date(value["$date"])
+					$("#data_table").append(
+						`<tr><th>${key}</th><td>${d}</td></tr>`
+					)
+				} else {
+					var length = Object.keys(value).length
+					$("#data_table").append(
+						`<tr id="data_${key}"><th ${length <= 1 ? "" : `rowspan=${length}`}>${key}</th></tr>`
+					)
+					for (const [deepkey, deepvalue] of Object.entries(value)) {
+						if (counter == 0) {
+							$(`#data_${key}`).append(
+								`<td>${deepkey}: ${deepvalue}</td>`
+							)
+							counter = 1
+						} else {
+							$("#data_table").append(
+								`<tr><td>${deepkey}: ${deepvalue}</td></tr>`
+							)
+						}
+					}
+				}
+			} else {
+				$("#data_table").append(
+					`<tr id="data_${key}" }><th>${key}</th><td>${value}</td></tr>`
+				)
+			}
+		}
+	})
 
     socket.on("response", function(msg) {
-      $("#log").prepend("<br>" + $("<div/>").text("logs #" + msg.count + ":" + msg.message).html());
+      	$("#log").prepend("<br>" + $("<div/>").text("logs #" + msg.count + ": " + msg.message).html());
     });
 
     socket.on("georesp", function(location) {
         if (mymap.hasLayer(marker)) {
-          console.log(mymap.hasLayer(marker))
           mymap.removeLayer(marker)
-          console.log(location.latitude)
-          console.log(location.longitude)
           marker = L.marker([parseInt(location.latitude), parseInt(location.longitude)]);
           marker.addTo(mymap)
           centerMapOnMarker(mymap, marker);
         }
         else {
-          console.log("Here")
-          console.log(mymap.hasLayer(marker))
           marker = L.marker([parseInt(location.latitude), parseInt(location.longitude)]);
           marker.addTo(mymap)
           centerMapOnMarker(mymap, marker);
@@ -31,9 +81,9 @@ $(document).ready(function() {
     })
 
     $('form#emit').submit(function(event) {
-              socket.emit('scooter_info', {data: $('#emit_data').val()});
-              return false;
-    });
+    socket.emit('scooter_info', {data: $('#emit_data').val()});
+    return false;
+	});
 
     $('form#power').submit(function(event) {
       socket.emit('power_signal', {pass: $('#password_power').val(), state: $('#power_button').val()});
@@ -43,9 +93,14 @@ $(document).ready(function() {
     $('button#geoloc').mouseup(function(event) {
         socket.emit('geoloc', {"data": "Updating marker"})
         return false;
-    });
+	});
     $('button#test').mouseup(function(event) {
         socket.emit('geoloc', {"data": "Updating marker"})
         return false;
     });
+
+    setInterval(() => {
+		socket.emit('scooter_info', {data: $('#emit_data').val()});
+		return false;
+    }, 5000)
   });

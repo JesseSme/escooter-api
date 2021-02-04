@@ -36,7 +36,7 @@ class WebSocketResource(Resource):
         scooter_data = scooter_data.to_json()
         scooter_json = json.loads(scooter_data)
         scooter_json.pop("_id")
-        emit("response", {"message": json.dumps(scooter_json), "count": session["receive_count"]})
+        emit("dataresponse", {"message": json.dumps(scooter_json), "count": session["receive_count"]})
 
 
     @socketio.on("geoloc", namespace="/")
