@@ -7,6 +7,8 @@ from datetime import datetime
 from models.controller import Controller, Temperatures
 from models.identifier import Identifier
 
+identity = {}
+
 class ControllerResource(Resource):
 
     # Handles incoming controller data.
@@ -14,7 +16,6 @@ class ControllerResource(Resource):
     def post(self):
         if not request.json:
             return {"error": "unsupported media."}, HTTPStatus.UNSUPPORTED_MEDIA_TYPE
-
         data = request.get_json()
         print(data)
         location = data["location"]
@@ -26,7 +27,6 @@ class ControllerResource(Resource):
                 fet=data["temp_fet"],
                 motor=data["temp_motor"]
                 ),
-            senderip=data["senderip"],
             avg_motorcurrent=data["average_motorcurrent"],
             avg_inputcurrent=data["average_inputcurrent"],
             input_voltage=data["input_voltage"],
@@ -36,10 +36,21 @@ class ControllerResource(Resource):
             created_at=datetime.now()
         )
         idd = data["identifier"]
-        Identifiers.objects.get_or_404(identifier=idd)
+        Identifier.objects.get_or_404(identifier=idd)
         try:
             controllerData.save()
         except:
             return {"error": "Something went wrong"}, HTTPStatus.INTERNAL_SERVER_ERROR
+        self.remember_scooter_ip(self, idd, data["sender_ip"])
+
         return {"message": "Data saved"}, HTTPStatus.OK
 
+    @staticmethod
+    def remember_scooter_ip(self, identifier, ip):
+        global identity
+        if not identity:
+            if identifier not in identity:
+                identity[identifier] = ip
+
+
+class ControllerPowerResource(Resource):
