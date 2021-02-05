@@ -62,6 +62,13 @@ $(document).ready(function() {
 		}
 	})
 
+	socket.on("power_response", function(msg) {
+		if (msg.state && (msg.state != "")) {
+			$("#power_button").val(msg.state)
+		}
+		$("#log").prepend("<br>" + $("<div/>").text("logs #" + msg.count + ": " + msg.message).html());
+	})
+
     socket.on("response", function(msg) {
       	$("#log").prepend("<br>" + $("<div/>").text("logs #" + msg.count + ": " + msg.message).html());
     });

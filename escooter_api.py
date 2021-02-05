@@ -3,7 +3,7 @@ from flask import Flask, render_template, url_for
 from flask_restful import Api
 
 # Resources
-from resource.controller import ControllerResource
+from resource.controller import ControllerResource, ControllerPowerResource
 from resource.home import HomeResource
 from resource.socket import WebSocketResource
 
@@ -35,6 +35,7 @@ def register_extensions(app):
 def register_resources(app):
     api = Api(app)
     api.add_resource(ControllerResource, '/ipa/controller')
+    api.add_resource(ControllerPowerResource, "/ipa/power_state")
     api.add_resource(HomeResource, "/")
 
 

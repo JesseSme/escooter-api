@@ -5,8 +5,13 @@ import json
 import requests
 
 from models.controller import Controller, Temperatures
+from resource.controller import ControllerPowerResource
 
 from extensions import socketio, me, apsheduler
+from secret import POWER_PASSWORD
+from utilities import hash_password, verify_password
+
+power_password = POWER_PASSWORD
 
 class WebSocketResource(Resource):
 
@@ -31,7 +36,6 @@ class WebSocketResource(Resource):
 
     @socketio.on("scooter_info", namespace="/")
     def scooter_info_event(message):
-        WebSocketResource.inc_receive()
         scooter_data = Controller.get_latest_data()
         scooter_data = scooter_data.to_json()
         scooter_json = json.loads(scooter_data)
@@ -41,7 +45,6 @@ class WebSocketResource(Resource):
 
     @socketio.on("geoloc", namespace="/")
     def geoloc_event(self):
-        print("Im here")
         emit("georesp", {"latitude": WebSocketResource.location[0], "longitude": WebSocketResource.location[1]})
         WebSocketResource.location[0] = WebSocketResource.location[0] + 1
         print(WebSocketResource.location[0])
@@ -49,11 +52,20 @@ class WebSocketResource(Resource):
 
     @socketio.on("power_signal", namespace="/")
     def power_signal_event(message):
-        session["receive_count"] = session.get("receive_count", 0) + 1
-        #if state == "on":
-        #Send turn on to controller
-        #Opposite on off
-        print(message["state"])
-        print(message["pass"])
-
-        emit("response", {"message": "Power signal sent.", "count": session["receive_count"]})
+        outmessage = ""
+        state = ""
+        WebSocketResource.inc_receive()
+        if verify_password(message["pass"], hash_password(POWER_PASSWORD)):
+            if message["state"] == "Turn on":
+                ControllerPowerResource.power_state = 1
+                outmessage = "On signal sent."
+                state = "Turn off"
+            elif message["state"] == "Turn off":
+                ControllerPowerResource.power_state = 0
+                outmessage = "Off signal sent."
+                state = "Turn on"
+            else:
+                message = "Something went wrong"
+        else:
+            message = "Wrong password."
+        emit("power_response", {"state": state, "message": outmessage, "count": session["receive_count"]})

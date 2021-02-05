@@ -41,16 +41,13 @@ class ControllerResource(Resource):
             controllerData.save()
         except:
             return {"error": "Something went wrong"}, HTTPStatus.INTERNAL_SERVER_ERROR
-        self.remember_scooter_ip(self, idd, data["sender_ip"])
 
         return {"message": "Data saved"}, HTTPStatus.OK
 
-    @staticmethod
-    def remember_scooter_ip(self, identifier, ip):
-        global identity
-        if not identity:
-            if identifier not in identity:
-                identity[identifier] = ip
-
 
 class ControllerPowerResource(Resource):
+
+    power_state = 0
+
+    def get(self):
+        return ControllerPowerResource.power_state, HTTPStatus.OK
