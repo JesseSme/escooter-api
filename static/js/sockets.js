@@ -91,9 +91,40 @@ $(document).ready(function() {
     socket.emit('scooter_info', {data: $('#emit_data').val()});
     return false;
 	});
-
+	/*
+	$('form#power').submit(function(event) {
+		socket.emit('power_signal', {pass: $('#password_power').val(), state: $('#power_button').val()});
+		return false;
+	  });
+	  */
+	 
     $('form#power').submit(function(event) {
-      socket.emit('power_signal', {pass: $('#password_power').val(), state: $('#power_button').val()});
+		message = {pass: $('#password_power').val(), state: $('#power_button').val()}
+	  /*
+		$.post("http://localhost:5000/ipa/power_state"
+	  , JSON.stringify(message)
+	  , (data, status, xhr) => {
+		if (data.state && (data.state != "")) {
+			$("#power_button").val(data.state)
+		}
+		$("#log").prepend("<br>" + $("<div/>").text(data.message).html());
+	  });
+	  */
+	  $.ajax({
+		type: "POST", // HTTP method POST or GET
+		contentType: 'application/json; charset=utf-8', //content type
+		url: "http://localhost:5000/ipa/power_state", //Where to make Ajax calls
+		dataType:'json', // Data type, HTML, json etc.
+		processData: false,
+		data: JSON.stringify(message),
+	}).done(
+		function(data) {
+			if (data.state && (data.state != "")) {
+				$("#power_button").val(data.state)
+			}
+			$("#log").prepend("<br>" + $("<div/>").text(data.message).html());
+		  }
+	);
       return false;
     });
 

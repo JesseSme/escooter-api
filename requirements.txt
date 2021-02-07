@@ -13,6 +13,7 @@ dnspython==2.0.0
 email-validator==1.1.2
 Flask==1.1.2
 Flask-APScheduler==1.11.0
+Flask-Cors==3.0.10
 flask-googlemaps==0.4.1
 Flask-JWT-Extended==3.25.0
 flask-mongoengine==1.0.0

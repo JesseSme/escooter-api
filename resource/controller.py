@@ -7,6 +7,10 @@ from datetime import datetime
 from models.controller import Controller, Temperatures
 from models.identifier import Identifier
 
+from utilities import verify_password, hash_password
+
+from secret import POWER_PASSWORD
+
 identity = {}
 
 class ControllerResource(Resource):
@@ -51,3 +55,29 @@ class ControllerPowerResource(Resource):
 
     def get(self):
         return ControllerPowerResource.power_state, HTTPStatus.OK
+
+    def post(self):
+        if not request.is_json:
+            return {"error": "unsupported media."}, HTTPStatus.UNSUPPORTED_MEDIA_TYPE
+        message = request.get_json(force=True)
+        print(message)
+        outmessage = ""
+        state = ""
+        # WebSocketResource.inc_receive()
+        if verify_password(message["pass"], hash_password(POWER_PASSWORD)):
+            if message["state"] == "Turn on":
+                if ControllerPowerResource.power_state != 1:
+                    ControllerPowerResource.power_state = 1
+                outmessage = "On signal sent."
+                state = "Turn off"
+            elif message["state"] == "Turn off":
+                if ControllerPowerResource.power_state != 0:
+                    ControllerPowerResource.power_state = 0
+                outmessage = "Off signal sent."
+                state = "Turn on"
+            else:
+                message = "Something went wrong"
+        else:
+            message = "Wrong password."
+        # emit("power_response", {"state": state, "message": outmessage, "count": session["receive_count"]})
+        return {"state": state, "message": outmessage}, HTTPStatus.OK
