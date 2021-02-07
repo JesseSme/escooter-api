@@ -3,6 +3,7 @@ from flask_restful import Resource
 from flask import jsonify
 from http import HTTPStatus
 from datetime import datetime
+import json
 # from extensions import me
 from models.controller import Controller, Temperatures
 from models.identifier import Identifier
@@ -14,6 +15,13 @@ from secret import POWER_PASSWORD
 identity = {}
 
 class ControllerResource(Resource):
+
+    def get(self):
+        scooter_data = Controller.get_latest_data()
+        scooter_data = scooter_data.to_json()
+        scooter_json = json.loads(scooter_data)
+        scooter_json.pop("_id")
+        return make_response(scooter_json, 200)
 
     # Handles incoming controller data.
     # TODO: Add token verification. No high prio.
