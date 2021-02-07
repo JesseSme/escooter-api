@@ -1,7 +1,7 @@
 $(document).ready(function() {
 
     namespace = "/";
-    var socket = io.connect(null, {port: 5000, rememberTransport: false});
+    var socket = io("ws://jesse.plus")
 	var scooter_data = ""
 
 

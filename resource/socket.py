@@ -57,11 +57,13 @@ class WebSocketResource(Resource):
         WebSocketResource.inc_receive()
         if verify_password(message["pass"], hash_password(POWER_PASSWORD)):
             if message["state"] == "Turn on":
-                ControllerPowerResource.power_state = 1
+                if ControllerPowerResource.power_state != 1:
+                    ControllerPowerResource.power_state = 1
                 outmessage = "On signal sent."
                 state = "Turn off"
             elif message["state"] == "Turn off":
-                ControllerPowerResource.power_state = 0
+                if ControllerPowerResource.power_state != 0:
+                    ControllerPowerResource.power_state = 0
                 outmessage = "Off signal sent."
                 state = "Turn on"
             else:
