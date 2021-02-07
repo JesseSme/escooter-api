@@ -80,4 +80,4 @@ class ControllerPowerResource(Resource):
         else:
             message = "Wrong password."
         # emit("power_response", {"state": state, "message": outmessage, "count": session["receive_count"]})
-        return {"state": state, "message": outmessage}, HTTPStatus.OK
+        return make_response({"state": state, "message": outmessage}, 200)
