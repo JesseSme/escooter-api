@@ -29,7 +29,6 @@ def register_extensions(app):
     maps.init_app(app)
     socketio.init_app(app)
     apsheduler.init_app(app)
-    # cors.init_app(app)
 
 
 
