@@ -1,64 +1,30 @@
 $(document).ready(function() {
 
-    namespace = "/";
-    var socket = io("ws://jesse.plus")
-	var scooter_data = ""
+	var location = {}
 
-
-    socket.on("connect", function() {
-      socket.emit("hello", {data: 'connected to the SocketServer...'});
-	});
-
-	//socket.on("dataresponse", dataTableUpdate(msg) )
-
-	socket.on("power_response", function(msg) {
-		if (msg.state && (msg.state != "")) {
-			$("#power_button").val(msg.state)
-		}
-		$("#log").prepend("<br>" + $("<div/>").text("logs #" + msg.count + ": " + msg.message).html());
-	})
-
-    socket.on("response", function(msg) {
-      	$("#log").prepend("<br>" + $("<div/>").text("logs #" + msg.count + ": " + msg.message).html());
-    });
-
-    socket.on("georesp", function(location) {
+    setInterval(function() {
+		if (location // 👈 null and undefined check
+			&& Object.keys(location).length === 0 && location.constructor === Object) {
+				return false;
+			}
+		console.log(location)
         if (mymap.hasLayer(marker)) {
           mymap.removeLayer(marker)
-          marker = L.marker([parseInt(location.latitude), parseInt(location.longitude)]);
+          marker = L.marker([parseInt(location[0]), parseInt(location[1])]);
           marker.addTo(mymap)
           centerMapOnMarker(mymap, marker);
         }
         else {
-          marker = L.marker([parseInt(location.latitude), parseInt(location.longitude)]);
+          marker = L.marker([parseInt(location[0]), parseInt(location[1])]);
           marker.addTo(mymap)
           centerMapOnMarker(mymap, marker);
-        }
-    })
-
-    $('form#emit').submit(function(event) {
-    socket.emit('scooter_info', {data: $('#emit_data').val()});
-    return false;
-	});
-	/*
-	$('form#power').submit(function(event) {
-		socket.emit('power_signal', {pass: $('#password_power').val(), state: $('#power_button').val()});
+		}
 		return false;
-	  });
-	  */
-	 
+	},
+	5000)
+
     $('form#power').submit(function(event) {
 		message = {pass: $('#password_power').val(), state: $('#power_button').val()}
-	  /*
-		$.post("http://localhost:5000/ipa/power_state"
-	  , JSON.stringify(message)
-	  , (data, status, xhr) => {
-		if (data.state && (data.state != "")) {
-			$("#power_button").val(data.state)
-		}
-		$("#log").prepend("<br>" + $("<div/>").text(data.message).html());
-	  });
-	  */
 	  $.ajax({
 		type: "POST", // HTTP method POST or GET
 		contentType: 'application/json; charset=utf-8', //content type
@@ -77,15 +43,6 @@ $(document).ready(function() {
       return false;
     });
 
-    $('button#geoloc').mouseup(function(event) {
-        socket.emit('geoloc', {"data": "Updating marker"})
-        return false;
-	});
-    $('button#test').mouseup(function(event) {
-        socket.emit('geoloc', {"data": "Updating marker"})
-        return false;
-    });
-
     setInterval(() => {
 		$.ajax({
 			type: "GET", // HTTP method POST or GET
@@ -93,7 +50,7 @@ $(document).ready(function() {
 			url: "http://localhost:5000/ipa/controller", //Where to make Ajax calls
 			success: function(data) {
 				var data = data
-				$("#data_location").text("Location: " + data["location"][0] + ", " + data["location"][1]).html()
+				location = data["location"]
 				$("#data_table").html("");
 				for ([key, value] of Object.entries(data)) {
 					var counter = 0
