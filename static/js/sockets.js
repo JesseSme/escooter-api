@@ -10,18 +10,20 @@ $(document).ready(function() {
 		console.log(location)
         if (mymap.hasLayer(marker)) {
           mymap.removeLayer(marker)
-          marker = L.marker([parseInt(location[0]), parseInt(location[1])]);
+          marker = L.marker(location);
           marker.addTo(mymap)
           centerMapOnMarker(mymap, marker);
         }
         else {
-          marker = L.marker([parseInt(location[0]), parseInt(location[1])]);
+          marker = L.marker(location);
           marker.addTo(mymap)
           centerMapOnMarker(mymap, marker);
 		}
 		return false;
 	},
 	5000)
+
+	$('button#centerMap').mouseup
 
     $('form#power').submit(function(event) {
 		message = {pass: $('#password_power').val(), state: $('#power_button').val()}
