@@ -3,16 +3,19 @@ from flask_restful import Resource
 from flask import jsonify
 from http import HTTPStatus
 from datetime import datetime
+import time
+
 import json
-# from extensions import me
+
 from models.controller import Controller, Temperatures
 from models.identifier import Identifier
 
 from utilities import verify_password, hash_password
+from extensions import mqtt, scooterData
 
 from secret import POWER_PASSWORD
 
-identity = {}
+
 
 class ControllerResource(Resource):
 
@@ -59,10 +62,10 @@ class ControllerResource(Resource):
 
 class ControllerPowerResource(Resource):
 
-    power_state = 0
+    timeSinceSwitch = 0
 
     def get(self):
-        return ControllerPowerResource.power_state, HTTPStatus.OK
+        return getattr(scooterData, "power_state"), HTTPStatus.OK
 
     def post(self):
         if not request.is_json:
@@ -71,21 +74,29 @@ class ControllerPowerResource(Resource):
         print(message)
         outmessage = ""
         state = ""
-        # WebSocketResource.inc_receive()
-        if verify_password(message["pass"], hash_password(POWER_PASSWORD)):
-            if message["state"] == "Turn on":
-                if ControllerPowerResource.power_state != 1:
-                    ControllerPowerResource.power_state = 1
-                outmessage = "On signal sent."
-                state = "Turn off"
-            elif message["state"] == "Turn off":
-                if ControllerPowerResource.power_state != 0:
-                    ControllerPowerResource.power_state = 0
-                outmessage = "Off signal sent."
-                state = "Turn on"
+
+        # TODO: Make this if-else clearer
+        if time.time() - ControllerPowerResource.timeSinceSwitch > 15:
+            if verify_password(message["pass"], hash_password(POWER_PASSWORD)):
+                if message["state"] == "Turn on":
+                    if scooterData.power_state == 0:
+                        setattr(scooterData, "power_state", 1)
+                    outmessage = "On signal sent."
+                    state = "Turn off"
+                    ControllerPowerResource.timeSinceSwitch = time.time()
+                elif message["state"] == "Turn off":
+                    if scooterData.power_state == 1:
+                        setattr(scooterData, "power_state", 0)
+                    outmessage = "Off signal sent."
+                    state = "Turn on"
+                    ControllerPowerResource.timeSinceSwitch = time.time()
+                else:
+                    message = -1
             else:
-                message = "Something went wrong"
+                message = -1
         else:
-            message = "Wrong password."
-        # emit("power_response", {"state": state, "message": outmessage, "count": session["receive_count"]})
+            message = -1
+            outmessage = "tryagain soon in: {}".format(15 - (time.time() - ControllerPowerResource.timeSinceSwitch))
+        if not message == -1:
+            mqtt.publish("scooter/jesse/power", scooterData.power_state)
         return make_response({"state": state, "message": outmessage}, 200)

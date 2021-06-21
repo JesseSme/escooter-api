@@ -12,12 +12,10 @@ $(document).ready(function() {
           mymap.removeLayer(marker)
           marker = L.marker([parseInt(location[0]), parseInt(location[1])]);
           marker.addTo(mymap)
-          centerMapOnMarker(mymap, marker);
         }
         else {
           marker = L.marker([parseInt(location[0]), parseInt(location[1])]);
           marker.addTo(mymap)
-          centerMapOnMarker(mymap, marker);
 		}
 		return false;
 	},
@@ -103,6 +101,4 @@ $(document).ready(function() {
 		})
 		return false;
 	}, 5000)
-	
-	
   });
